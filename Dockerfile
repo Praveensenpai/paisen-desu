@@ -1,28 +1,19 @@
-# Use Bun base image
 FROM oven/bun:latest AS builder
-
 WORKDIR /app
 
-# Copy config and lockfiles
-COPY package.json bun.lockb ./
+# Use a wildcard so it doesn't crash if the lockfile is missing or named differently
+COPY package.json bun.lock* ./
 
-# Install deps
-RUN bun install --frozen-lockfile
+# Install without the --frozen-lockfile flag since you don't have a stable lock
+RUN bun install
 
-# Copy source and build using vinxi
 COPY . .
 RUN bun run build
 
-# Final runner stage
 FROM oven/bun:latest AS runner
-
 WORKDIR /app
-
-# Only copy the compiled output
 COPY --from=builder /app/.output ./.output
-
-# Render uses the PORT env var, Nitro/Vinxi picks it up automatically
 ENV NODE_ENV=production
 
-# Run the generated server
+# SolidStart/Nitro listens on PORT env var automatically
 CMD ["bun", ".output/server/index.mjs"]

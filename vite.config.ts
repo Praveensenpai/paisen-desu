@@ -9,7 +9,4 @@ export default defineConfig({
     tailwindcss(),
     nitro()
   ],
-  server: {
-    port: 3000
-  }
 });

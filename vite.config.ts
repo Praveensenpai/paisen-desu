@@ -8,5 +8,8 @@ export default defineConfig({
     solidStart(),
     tailwindcss(),
     nitro()
-  ]
+  ],
+  server: {
+    port: 3000
+  }
 });
